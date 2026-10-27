@@ -1,25 +1,24 @@
-
 # Installation & Integration
 
-Alluneve-Debug provides a shared logging API for RuneScape plugins. Integration is opt-in and supports both required and optional dependencies.
+be.alluneve.runescape.logger provides a shared logging API for RuneScape plugins. Integration is opt-in and supports both required and optional dependencies.
 
 ## 1. Installation
 
-Install **Alluneve-Debug** through the RuneScape Plugin Hub and enable it in-game.
+Install **be.alluneve.runescape.logger** through the RuneScape Plugin Hub and enable it in-game.
 
 **PrettyUI** is required for the settings and report viewer.
 
-For local development, the plugin's folder identifier is `Alluneve-Runescape-Debug`.
+For local development, the plugin's folder identifier is `be.alluneve.runescape.logger`.
 
 ## 2. Declare the Dependency
 
-Add Alluneve-Debug to your plugin's `plugin.json`.
+Add be.alluneve.runescape.logger to your plugin's `plugin.json`.
 
 **Required dependency:**
 
 ```json
 "requiredDependencies": {
-    "AlluneveDebug": "Alluneve-Runescape-Debug"
+    "AlluneveLogger": "be.alluneve.runescape.logger"
 }
 ```
 
@@ -27,20 +26,20 @@ Add Alluneve-Debug to your plugin's `plugin.json`.
 
 ```json
 "optionalDependencies": {
-    "AlluneveDebug": "Alluneve-Runescape-Debug"
+    "AlluneveLogger": "be.alluneve.runescape.logger"
 }
 ```
 
-The identifier `AlluneveDebug` becomes the Lua variable through which your plugin accesses the exported API.
+The identifier `AlluneveLogger` becomes the Lua variable through which your plugin accesses the exported API.
 
-An optional dependency allows your plugin to continue functioning without Alluneve-Debug installed or enabled.
+An optional dependency allows your plugin to continue functioning without be.alluneve.runescape.logger installed or enabled.
 
 ## 3. Register Your Plugin
 
 Once the dependency is available, register using a unique identifier for your plugin:
 
 ```lua
-local debugAPI = AlluneveDebug.RegisterYourself("MyPlugin")
+local loggerAPI = AlluneveLogger.RegisterYourself("MyPlugin")
 ```
 
 Registration returns a logging API bound to your plugin identifier. You do not need to pass the identifier again when logging.
@@ -50,10 +49,10 @@ Use **dot notation** when calling these functions.
 ## 4. Logging API
 
 ```lua
-debugAPI.Debug("Detailed diagnostic information")
-debugAPI.Info("Plugin initialized")
-debugAPI.Warn("Unexpected value:", value)
-debugAPI.Error("Something went wrong:", reason)
+loggerAPI.Debug("Detailed diagnostic information")
+loggerAPI.Info("Plugin initialized")
+loggerAPI.Warn("Unexpected value:", value)
+loggerAPI.Error("Something went wrong:", reason)
 ```
 
 Multiple arguments are supported and converted to strings.
@@ -71,19 +70,19 @@ For example:
 
 ```lua
 -- Save a report of the current session.
-debugAPI.SubmitLog()
+loggerAPI.SubmitLog()
 
 -- Capture events surrounding unexpected behavior.
-debugAPI.TriggerRecorder()
+loggerAPI.TriggerRecorder()
 ```
 
-By default, the flight recorder captures **60 seconds before and 10 seconds after** its trigger. These durations can be configured in Alluneve-Debug's settings.
+By default, the flight recorder captures **60 seconds before and 10 seconds after** its trigger. These durations can be configured in be.alluneve.runescape.logger's settings.
 
-Logging an error through `Error()` automatically triggers the recorder. Alluneve-Debug does not intercept global Lua errors.
+Logging an error through `Error()` automatically triggers the recorder. be.alluneve.runescape.logger does not intercept global Lua errors.
 
 ## 5. Optional Dependency Integration
 
-When using an optional dependency, provide a no-op fallback so logging calls remain safe even when Alluneve-Debug is unavailable.
+When using an optional dependency, provide a no-op fallback so logging calls remain safe even when be.alluneve.runescape.logger is unavailable.
 
 ```lua
 local function NoOp(...) end
@@ -97,56 +96,56 @@ local FALLBACK = {
     TriggerRecorder = NoOp
 }
 
-local debugAPI = FALLBACK
+local loggerAPI = FALLBACK
 local dependencyEnabled = true
 
-local function BindDebug()
+local function BindLogger()
     if not dependencyEnabled
-        or not AlluneveDebug
-        or not AlluneveDebug.RegisterYourself then
-        debugAPI = FALLBACK
+        or not AlluneveLogger
+        or not AlluneveLogger.RegisterYourself then
+        loggerAPI = FALLBACK
         return
     end
 
-    debugAPI = AlluneveDebug.RegisterYourself("MyPlugin")
+    loggerAPI = AlluneveLogger.RegisterYourself("MyPlugin")
         or FALLBACK
 end
 
-BindDebug()
+BindLogger()
 
 -- Handle enabling/disabling the optional dependency.
 Event.OptionalDependencyChanged.Subscribe(
-    "MyPluginDebugDependency",
+    "MyPluginLoggerDependency",
     function(event)
-        if event.pluginIdentifier ~= "AlluneveDebug" then
+        if event.pluginIdentifier ~= "AlluneveLogger" then
             return
         end
 
         dependencyEnabled = event.enabled
-        debugAPI = FALLBACK
+        loggerAPI = FALLBACK
 
         if dependencyEnabled then
-            BindDebug()
+            BindLogger()
         end
     end
 )
 
 -- Retry registration if the dependency export
 -- is not immediately available after enabling it.
-Event.Logic.Subscribe("MyPluginDebugRetry", function()
-    if dependencyEnabled and debugAPI == FALLBACK then
-        BindDebug()
+Event.Logic.Subscribe("MyPluginLoggerRetry", function()
+    if dependencyEnabled and loggerAPI == FALLBACK then
+        BindLogger()
     end
 end)
 ```
 
-Your plugin can now call `debugAPI.Info(...)` and the other methods without checking whether Alluneve-Debug is enabled each time.
+Your plugin can now call `loggerAPI.Info(...)` and the other methods without checking whether be.alluneve.runescape.logger is enabled each time.
 
 If you subscribe to events yourself, remember to unsubscribe during your plugin's shutdown.
 
 ## 6. Settings & Reports
 
-Alluneve-Debug provides an in-game interface for managing diagnostics.
+be.alluneve.runescape.logger provides an in-game interface for managing logs and diagnostic reports.
 
 - **Settings:** Independently enable or disable DEBUG, INFO, WARN, and ERROR output.
 - **Console:** Enabled severity levels are printed to the developer console.
@@ -161,6 +160,6 @@ Direct clipboard export is awaiting support from the RuneScape Plugin API.
 
 ## Additional Information
 
-- [Alluneve-Debug on GitHub](https://github.com/Alluneve/Alluneve-Runescape-Debug)
+- [be.alluneve.runescape.logger on GitHub](https://github.com/Alluneve/be.alluneve.runescape.logger)
 - [RuneScape Plugin API Documentation](https://developer.runescape.com/rs/getting-started.html)
 - [RuneScape Plugin Dependencies](https://developer.runescape.com/rs/structure.html#dependencies)

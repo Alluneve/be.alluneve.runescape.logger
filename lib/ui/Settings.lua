@@ -3,7 +3,7 @@ local Settings = {}
 local database = require("lib/backend/db/Database")
 local Reports = require("lib/ui/Reports")
 
-local EVENT_REFERENCE = "AlluneveDebugSettings"
+local EVENT_REFERENCE = "AlluneveLoggerSettings"
 local settingsView
 
 local function OnSettingsLayerReady(event)
@@ -18,7 +18,7 @@ local function OnSettingsLayerReady(event)
         height = parent.height
     })
 
-    settingsView:AddTitle("Alluneve-Debug")
+    settingsView:AddTitle("be.alluneve.runescape.logger")
 
     settingsView:AddTitle("Console and report output")
     settingsView:AddText(

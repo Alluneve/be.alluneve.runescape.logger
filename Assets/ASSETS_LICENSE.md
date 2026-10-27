@@ -12,7 +12,7 @@ The artist has expressly granted the commissioner permission to use the artwork,
 - The commissioner must not claim to have created the artwork.
 - The original artist must be credited.
 
-This permission includes the commissioner's use of the artwork as branding and iconography for the Alluneve-Debug plugin.
+This permission includes the commissioner's use of the artwork as branding and iconography for the be.alluneve.runescape.logger plugin.
 
 ### Separation from Software Licensing
 

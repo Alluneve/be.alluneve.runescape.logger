@@ -2,14 +2,14 @@ local Content = {}
 
 local registeredAddons = {}
 
----@param addons table<string, AlluneveDebugAPI>
+---@param addons table<string, AlluneveLoggerAPI>
 function Content.SetRegisteredAddons(addons)
     registeredAddons = addons
 end
 
 local Reports = require("lib/ui/Reports")
 
-local EVENT_REFERENCE = "AlluneveDebugContent"
+local EVENT_REFERENCE = "AlluneveLoggerContent"
 local contentView
 
 local function OnContentLayerReady(event)
@@ -24,7 +24,7 @@ local function OnContentLayerReady(event)
         height = parent.height
     })
 
-    contentView:AddTitle("Alluneve-Debug")
+    contentView:AddTitle("be.alluneve.runescape.logger")
     contentView:AddSimpleButton("Open saved reports", Reports.Open)
 
     contentView:AddTitle("Submit debug log")
