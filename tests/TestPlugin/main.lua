@@ -1,13 +1,13 @@
-local EVENT_REFERENCE = "AlluneveDebugTestSequence"
-local DEPENDENCY_REFERENCE = "AlluneveDebugTestDependency"
-local ADDON_IDENTIFIER = "AlluneveDebugTest"
+local EVENT_REFERENCE = "AlluneveLoggerTestSequence"
+local DEPENDENCY_REFERENCE = "AlluneveLoggerTestDependency"
+local ADDON_IDENTIFIER = "AlluneveLoggerTest"
 
 -- No-op fallback --
 
 local function NoOp() end
 
 ---@type AlluneveLoggerAPI
-local NOOP_DEBUG_API = {
+local NOOP_LOGGER_API = {
     Info = NoOp,
     Debug = NoOp,
     Warn = NoOp,
@@ -17,7 +17,7 @@ local NOOP_DEBUG_API = {
 }
 
 ---@type AlluneveLoggerAPI
-local debugAPI = NOOP_DEBUG_API
+local loggerAPI = NOOP_LOGGER_API
 
 -- State --
 
@@ -33,30 +33,30 @@ local steps = {
     {
         tick = 100,
         run = function()
-            debugAPI.Info("Delayed INFO test")
-            debugAPI.Debug("Delayed DEBUG test")
-            debugAPI.Warn("Delayed WARN test")
+            loggerAPI.Info("Delayed INFO test")
+            loggerAPI.Debug("Delayed DEBUG test")
+            loggerAPI.Warn("Delayed WARN test")
             print("[be.alluneve.runescape.logger Test] Three messages logged")
         end
     },
     {
         tick = 200,
         run = function()
-            debugAPI.SubmitLog()
+            loggerAPI.SubmitLog()
             print("[be.alluneve.runescape.logger Test] Requested settings-filtered report")
         end
     },
     {
         tick = 300,
         run = function()
-            debugAPI.Error("Triggered flight recorder test")
+            loggerAPI.Error("Triggered flight recorder test")
             print("[be.alluneve.runescape.logger Test] Triggered flight recorder")
         end
     },
     {
         tick = 350,
         run = function()
-            debugAPI.Info("Post-trigger entry")
+            loggerAPI.Info("Post-trigger entry")
         end
     },
     {
@@ -68,7 +68,7 @@ local steps = {
     {
         tick = 900,
         run = function()
-            debugAPI.SubmitLog()
+            loggerAPI.SubmitLog()
             print("[be.alluneve.runescape.logger Test] Requested final report")
         end
     },
@@ -85,8 +85,8 @@ local steps = {
                 )
             end
 
-            debugAPI.Warn(table.concat(lines, "\n"))
-            debugAPI.SubmitLog()
+            loggerAPI.Warn(table.concat(lines, "\n"))
+            loggerAPI.SubmitLog()
 
             print("[be.alluneve.runescape.logger Test] Requested large multiline report (200 lines)")
         end
@@ -101,20 +101,20 @@ local function StopTest()
     step = 1
 end
 
-local function UnbindDebug()
+local function UnbindLogger()
     StopTest()
-    debugAPI = NOOP_DEBUG_API
+    loggerAPI = NOOP_LOGGER_API
     boundDependency = nil
 end
 
 local function TryRegister()
-    local dependency = AlluneveDebug
+    local dependency = AlluneveLogger
 
     if type(dependency) ~= "table"
         or type(dependency.RegisterYourself) ~= "function"
         or dependency == disabledDependency then
         if boundDependency then
-            UnbindDebug()
+            UnbindLogger()
             print("[be.alluneve.runescape.logger Test] Dependency unavailable; using no-op API")
         end
 
@@ -141,7 +141,7 @@ local function TryRegister()
         return
     end
 
-    debugAPI = result
+    loggerAPI = result
     boundDependency = dependency
 
     firstTick = nil
@@ -184,8 +184,8 @@ local function OnDependencyChanged(event)
         event.enabled
     )
 
-    if event.pluginIdentifier ~= "AlluneveDebug"
-        and event.pluginIdentifier ~= "Alluneve-Runescape-Debug" then
+    if event.pluginIdentifier ~= "AlluneveLogger"
+        and event.pluginIdentifier ~= "be.alluneve.runescape.logger" then
         return
     end
 
@@ -193,8 +193,8 @@ local function OnDependencyChanged(event)
         disabledDependency = nil
         -- Retry registration on the next logic tick.
     else
-        disabledDependency = AlluneveDebug
-        UnbindDebug()
+        disabledDependency = AlluneveLogger
+        UnbindLogger()
         print("[be.alluneve.runescape.logger Test] Switched to no-op API")
     end
 end
@@ -211,7 +211,7 @@ Event.Logic.Subscribe(EVENT_REFERENCE, OnLogic)
 function PluginShutdown()
     Event.Logic.Unsubscribe(EVENT_REFERENCE)
     Event.OptionalDependencyChanged.Unsubscribe(DEPENDENCY_REFERENCE)
-    UnbindDebug()
+    UnbindLogger()
 end
 
 -- Initial registration attempt.
