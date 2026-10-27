@@ -143,7 +143,7 @@ local function ConfirmClearReports()
 
     clearDialog = prettyui.Confirm.new(parent, {
         title = "Clear all reports?",
-        body = "Delete every saved Alluneve-Debug report? This cannot be undone.",
+        body = "Delete every saved be.alluneve.runescape.logger report? This cannot be undone.",
         confirmLabel = "Clear reports",
         confirmVariant = "negative",
 
@@ -177,7 +177,7 @@ local function CopySelectedReport()
     -- future RuneScape clipboard API.
 
     print(string.format(
-        "Alluneve-Debug: Clipboard API unavailable. Report ready (%d bytes).",
+        "be.alluneve.runescape.logger: Clipboard API unavailable. Report ready (%d bytes).",
         #content
     ))
 end
@@ -195,7 +195,7 @@ function Reports.Open()
 
     if not parent then
         print(
-            "Alluneve-Debug: Cannot open report viewer; game UI is unavailable."
+            "be.alluneve.runescape.logger: Cannot open report viewer; game UI is unavailable."
         )
         return
     end
@@ -204,7 +204,7 @@ function Reports.Open()
     selectedIndex = #reports > 0 and 1 or 0
 
     window = prettyui.Window.new(parent, {
-        title = "Alluneve-Debug - Saved Reports",
+        title = "be.alluneve.runescape.logger - Saved Reports",
         x = -310,
         y = -260,
         xAnchor = 0.5,

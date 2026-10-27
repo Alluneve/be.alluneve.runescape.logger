@@ -72,7 +72,7 @@ function Helper.SendToDB(addonIdentifier, logObjects, triggerTick)
     local referenceTick = triggerTick or logObjects[1].tick
 
     local lines = {
-        string.format("Alluneve-Debug Report: %s", addonIdentifier),
+        string.format("be.alluneve.runescape.logger Report: %s", addonIdentifier),
         string.format(
             "%s at tick: %d",
             triggerTick and "Triggered" or "Started",

@@ -6,7 +6,7 @@ local ADDON_IDENTIFIER = "AlluneveDebugTest"
 
 local function NoOp() end
 
----@type AlluneveDebugAPI
+---@type AlluneveLoggerAPI
 local NOOP_DEBUG_API = {
     Info = NoOp,
     Debug = NoOp,
@@ -16,7 +16,7 @@ local NOOP_DEBUG_API = {
     TriggerRecorder = NoOp
 }
 
----@type AlluneveDebugAPI
+---@type AlluneveLoggerAPI
 local debugAPI = NOOP_DEBUG_API
 
 -- State --
@@ -36,21 +36,21 @@ local steps = {
             debugAPI.Info("Delayed INFO test")
             debugAPI.Debug("Delayed DEBUG test")
             debugAPI.Warn("Delayed WARN test")
-            print("[Alluneve-Debug Test] Three messages logged")
+            print("[be.alluneve.runescape.logger Test] Three messages logged")
         end
     },
     {
         tick = 200,
         run = function()
             debugAPI.SubmitLog()
-            print("[Alluneve-Debug Test] Requested settings-filtered report")
+            print("[be.alluneve.runescape.logger Test] Requested settings-filtered report")
         end
     },
     {
         tick = 300,
         run = function()
             debugAPI.Error("Triggered flight recorder test")
-            print("[Alluneve-Debug Test] Triggered flight recorder")
+            print("[be.alluneve.runescape.logger Test] Triggered flight recorder")
         end
     },
     {
@@ -62,14 +62,14 @@ local steps = {
     {
         tick = 850,
         run = function()
-            print("[Alluneve-Debug Test] Flight recorder deadline should have passed")
+            print("[be.alluneve.runescape.logger Test] Flight recorder deadline should have passed")
         end
     },
     {
         tick = 900,
         run = function()
             debugAPI.SubmitLog()
-            print("[Alluneve-Debug Test] Requested final report")
+            print("[be.alluneve.runescape.logger Test] Requested final report")
         end
     },
     {
@@ -88,7 +88,7 @@ local steps = {
             debugAPI.Warn(table.concat(lines, "\n"))
             debugAPI.SubmitLog()
 
-            print("[Alluneve-Debug Test] Requested large multiline report (200 lines)")
+            print("[be.alluneve.runescape.logger Test] Requested large multiline report (200 lines)")
         end
     }
 }
@@ -115,7 +115,7 @@ local function TryRegister()
         or dependency == disabledDependency then
         if boundDependency then
             UnbindDebug()
-            print("[Alluneve-Debug Test] Dependency unavailable; using no-op API")
+            print("[be.alluneve.runescape.logger Test] Dependency unavailable; using no-op API")
         end
 
         return
@@ -132,12 +132,12 @@ local function TryRegister()
     )
 
     if not success then
-        print("[Alluneve-Debug Test] Registration failed:", result)
+        print("[be.alluneve.runescape.logger Test] Registration failed:", result)
         return
     end
 
     if type(result) ~= "table" then
-        print("[Alluneve-Debug Test] Registration returned no API")
+        print("[be.alluneve.runescape.logger Test] Registration returned no API")
         return
     end
 
@@ -148,7 +148,7 @@ local function TryRegister()
     step = 1
     running = true
 
-    print("[Alluneve-Debug Test] Registered; test sequence scheduled")
+    print("[be.alluneve.runescape.logger Test] Registered; test sequence scheduled")
 end
 
 -- Logic scheduler --
@@ -171,7 +171,7 @@ local function OnLogic(event)
 
     if running and not steps[step] then
         running = false
-        print("[Alluneve-Debug Test] Sequence complete")
+        print("[be.alluneve.runescape.logger Test] Sequence complete")
     end
 end
 
@@ -179,7 +179,7 @@ end
 
 local function OnDependencyChanged(event)
     print(
-        "[Alluneve-Debug Test] Dependency event:",
+        "[be.alluneve.runescape.logger Test] Dependency event:",
         event.pluginIdentifier,
         event.enabled
     )
@@ -195,7 +195,7 @@ local function OnDependencyChanged(event)
     else
         disabledDependency = AlluneveDebug
         UnbindDebug()
-        print("[Alluneve-Debug Test] Switched to no-op API")
+        print("[be.alluneve.runescape.logger Test] Switched to no-op API")
     end
 end
 
@@ -218,5 +218,5 @@ end
 TryRegister()
 
 if not boundDependency then
-    print("[Alluneve-Debug Test] Waiting for Alluneve-Debug")
+    print("[be.alluneve.runescape.logger Test] Waiting for be.alluneve.runescape.logger")
 end

@@ -11,11 +11,11 @@ local Content = require("lib/ui/Content")
 
 
 local Severity = RollingLog.Severity
-local RegisteredDebugAddons = {}
-Content.SetRegisteredAddons(RegisteredDebugAddons)
+local RegisteredAddons = {}
+Content.SetRegisteredAddons(RegisteredAddons)
 local API = {}
 
----@class AlluneveDebugAPI
+---@class AlluneveLoggerAPI
 ---@field Info fun(...: any)
 ---@field Debug fun(...: any)
 ---@field Warn fun(...: any)
@@ -24,18 +24,18 @@ local API = {}
 ---@field TriggerRecorder fun()
 
 ---@param addonIdentifier string
----@return AlluneveDebugAPI
+---@return AlluneveLoggerAPI
 function API.RegisterYourself(addonIdentifier)
     assert(
         type(addonIdentifier) == "string" and addonIdentifier ~= "",
-        "Alluneve-Debug: Invalid addon identifier"
+        "be.alluneve.runescape.logger: Invalid addon identifier"
     )
 
-    if RegisteredDebugAddons[addonIdentifier] then
-        return RegisteredDebugAddons[addonIdentifier]
+    if RegisteredAddons[addonIdentifier] then
+        return RegisteredAddons[addonIdentifier]
     end
 
-    ---@type AlluneveDebugAPI
+    ---@type AlluneveLoggerAPI
     local addonAPI = {
         Info = function(...)
             Debug.Log(addonIdentifier, Severity.INFO, ...)
@@ -58,7 +58,7 @@ function API.RegisterYourself(addonIdentifier)
         end
     }
 
-    RegisteredDebugAddons[addonIdentifier] = addonAPI
+    RegisteredAddons[addonIdentifier] = addonAPI
     return addonAPI
 end
 
@@ -68,10 +68,10 @@ function PluginShutdown()
     FlightRecorder.Shutdown()
     Content.Shutdown()
     if not database.Save() then
-        print("Alluneve-Debug: Failed to save database.")
+        print("be.alluneve.runescape.logger: Failed to save database.")
     end
 end
 
-print("Alluneve-Debug: Loaded.")
+print("be.alluneve.runescape.logger: Loaded.")
 
 return API

@@ -9,7 +9,7 @@ local database = require("lib/backend/db/Database")
 local TICKS_PER_SECOND = 50
 local CLEANUP_OPERATIONS_PER_TICK = 128
 local CLEANUP_WINDOW_FRACTION = 5 / 6
-local EVENT_REFERENCE = "AlluneveDebugFlightRecorder"
+local EVENT_REFERENCE = "AlluneveLoggerFlightRecorder"
 
 -- Settings --
 
@@ -59,7 +59,7 @@ local function ValidateSeconds(seconds)
         or seconds ~= seconds
         or seconds <= 0
         or seconds >= math.huge then
-        error("Alluneve-Debug: Seconds must be a positive finite number", 3)
+        error("be.alluneve.runescape.logger: Seconds must be a positive finite number", 3)
     end
 end
 

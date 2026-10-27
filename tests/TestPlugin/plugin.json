@@ -1,5 +1,5 @@
 {
-  "name": "Alluneve-Debug Test Plugin",
+  "name": "be.alluneve.runescape.logger Test Plugin",
   "version": "0.0.1",
   "contactEmailAddress": "example@example.com",
   "optionalDependencies": {
