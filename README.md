@@ -1,6 +1,6 @@
-# Alluneve-Debug
+# be.alluneve.runescape.logger
 
-**Alluneve-Debug** is a shared debugging framework for RuneScape plugin developers. It provides a common API for structured, severity-based logging without having to build and maintain your own logging infrastructure.
+**be.alluneve.runescape.logger** is a shared debugging and logging for RuneScape plugin developers. It provides a common API for structured, severity-based logging without having to build and maintain your own logging infrastructure.
 
 Diagnostic messages are retained in independent, per-plugin rolling histories. When a registered plugin logs an error or manually triggers the flight recorder, Alluneve-Debug generates a report containing events from **60 seconds before and 10 seconds after the trigger** by default. This gives developers a timeline of what their plugin was doing around a problem.
 
